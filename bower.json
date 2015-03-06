@@ -1,0 +1,19 @@
+{
+  "name": "jquery-translate",
+  "version": "0.1.0",
+  "main": "dist/translate.jquery.min.js",
+  "authors": [
+    "Marcos Hernández <marcoslhc@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "marcoslhc.github.io",
+  "private": true,
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "i18n": "*",
+    "jquery": "*"
+  }
+}
