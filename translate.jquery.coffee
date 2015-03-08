@@ -50,9 +50,11 @@
                 getTranslations language, (translation)->
                     $this = translate translation, $this
                     $this.trigger('translate:translated', [_options.language])
+                    $this
         else
             getTranslations _options.language, (translation)->
                 $this = translate translation, $this
                 $this.trigger('translate:translated', [_options.language])
+                $this
         $this
 ) jQuery
