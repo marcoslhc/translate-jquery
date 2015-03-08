@@ -1,6 +1,6 @@
 {
   "name": "jquery-translate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/translate.jquery.min.js",
   "authors": [
     "Marcos Hernández <marcoslhc@gmail.com>"
