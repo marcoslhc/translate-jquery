@@ -12,7 +12,7 @@
                 $elm.data 'text', $elm.html()
             if $elm.attr 'placeholder'
                 $elm.attr 'placeholder', i18n._ $elm.attr 'placeholder'
-            $elm.text i18n._ $elm.html()
+            $elm.html i18n._ $elm.html()
         return $collection
 
     getLanguage = (url, cb) ->
