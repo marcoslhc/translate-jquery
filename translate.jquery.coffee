@@ -44,11 +44,13 @@
         _options = $.extend _options, options
         $this = this
         if !options.language
-            getLanguage _options.detectUrl, (data)->
-                getTranslations data, (data)->
-                    $this = translate data, $this
+            getLanguage _options.detectUrl, (language)->
+                getTranslations language, (translation)->
+                    $this = translate translation, $this
+                    $this.trigger('translate:translated', [language])
         else
-            getTranslations options.language, (data)->
-                $this = translate data, $this
+            getTranslations options.language, (translation)->
+                $this = translate translation, $this
+                $this.trigger('translate:translated', [language])
         $this
 ) jQuery
