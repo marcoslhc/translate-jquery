@@ -9,10 +9,10 @@
             if !$elm.data 'placeholder'
                 $elm.data 'placeholder', $elm.attr 'placeholder'
             if !$elm.data 'text'
-                $elm.data 'text', $elm.text()
+                $elm.data 'text', $elm.html()
             if $elm.attr 'placeholder'
                 $elm.attr 'placeholder', i18n._ $elm.attr 'placeholder'
-            $elm.text i18n._ $elm.text()
+            $elm.text i18n._ $elm.html()
         return $collection
 
     getLanguage = (url, cb) ->
