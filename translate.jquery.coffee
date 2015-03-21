@@ -38,7 +38,7 @@
     $.fn.translate = (options)->
         options = options || {}
         _options =
-            detectUrl: 'http://irina.xiryvella.com/lib/get_language.php'
+            detectUrl: ''
             localeFolder: 'locale'
             language: 'en'
         _options = $.extend _options, options
