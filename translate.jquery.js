@@ -16,9 +16,9 @@
         $elm.data('text', $elm.html());
       }
       if ($elm.attr('placeholder')) {
-        $elm.attr('placeholder', i18n._($elm.attr('placeholder')));
+        $elm.attr('placeholder', i18n._($elm.data('placeholder')));
       }
-      return $elm.html(i18n._($elm.html()));
+      return $elm.html(i18n._($elm.data('text')));
     });
     return $collection;
   };
@@ -65,13 +65,15 @@
         _options = $.extend(_options, options);
         return getTranslations(language, function(translation) {
           $this = translate(translation, $this);
-          return $this.trigger('translate:translated', [_options.language]);
+          $this.trigger('translate:translated', [_options.language]);
+          return $this;
         });
       });
     } else {
       getTranslations(_options.language, function(translation) {
         $this = translate(translation, $this);
-        return $this.trigger('translate:translated', [_options.language]);
+        $this.trigger('translate:translated', [_options.language]);
+        return $this;
       });
     }
     return $this;

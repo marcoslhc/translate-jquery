@@ -11,8 +11,8 @@
             if !$elm.data 'text'
                 $elm.data 'text', $elm.html()
             if $elm.attr 'placeholder'
-                $elm.attr 'placeholder', i18n._ $elm.attr 'placeholder'
-            $elm.html i18n._ $elm.html()
+                $elm.attr 'placeholder', i18n._ $elm.data 'placeholder'
+            $elm.html i18n._ $elm.data 'text'
         return $collection
 
     getLanguage = (url, cb) ->
@@ -38,7 +38,7 @@
     $.fn.translate = (options)->
         options = options || {}
         _options =
-            detectUrl: 'http://irina.xiryvella.com/lib/get_language.php'
+            detectUrl: ''
             localeFolder: 'locale'
             language: 'en'
         _options = $.extend _options, options
