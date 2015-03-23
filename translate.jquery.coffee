@@ -6,13 +6,21 @@
         $collection = $ collection
         $collection.each (idx, elm)   ->
             $elm = $ elm
-            if !$elm.data 'placeholder'
-                $elm.data 'placeholder', $elm.attr 'placeholder'
+
+            if $elm.attr 'placeholder'
+                if !$elm.data 'placeholder'
+                    $elm.data 'placeholder', $elm.attr 'placeholder'
+                $elm.attr 'placeholder', i18n._ $elm.data 'placeholder'
+
+            if $elm.attr 'value'
+                if !$elm.data 'value'
+                    $elm.data 'value', $elm.attr 'value'
+                $elm.attr 'value', i18n._ $elm.data 'value'
+
             if !$elm.data 'text'
                 $elm.data 'text', $elm.html()
-            if $elm.attr 'placeholder'
-                $elm.attr 'placeholder', i18n._ $elm.data 'placeholder'
             $elm.html i18n._ $elm.data 'text'
+
         return $collection
 
     getLanguage = (url, cb) ->
