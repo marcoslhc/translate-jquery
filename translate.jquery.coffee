@@ -1,68 +1,78 @@
 (($) ->
     _cache = {}
     _localeFolder = 'locale/'
-    translate = (data, collection) ->
-        i18n data
-        $collection = $ collection
-        $collection.each (idx, elm)   ->
-            $elm = $ elm
 
-            if $elm.attr 'placeholder'
-                if !$elm.data 'placeholder'
-                    $elm.data 'placeholder', $elm.attr 'placeholder'
-                $elm.attr 'placeholder', i18n._ $elm.data 'placeholder'
+    class Translate
+        constructor: (element, options) ->
+            @init('translate', element, options)
+        init: (type, element, options)->
+            @type = type;
+            @$element = $(element)
+            @options =
+                detectUrl: 'http://localhost:3000/languages'
+                localeFolder: 'locale'
+                language: 'en'
 
-            if $elm.attr 'value'
-                if !$elm.data 'value'
-                    $elm.data 'value', $elm.attr 'value'
-                $elm.attr 'value', i18n._ $elm.data 'value'
+            @option = $.extend @options, options
 
-            if !$elm.data 'text'
-                $elm.data 'text', $elm.html()
-            $elm.html i18n._ $elm.data 'text'
+        doTranslation: (data)->
+            i18n data
+            if @$element.attr 'placeholder'
+                if !@$element.data 'placeholder'
+                    @$element.data 'placeholder', @$element.attr 'placeholder'
+                @$element.attr 'placeholder', i18n._ @$element.data 'placeholder'
 
-        return $collection
+            if @$element.attr 'value'
+                if !@$element.data 'value'
+                    @$element.data 'value', @$element.attr 'value'
+                @$element.attr 'value', i18n._ @$element.data 'value'
 
-    getLanguage = (url, cb) ->
-        languages = $.ajax
-            url: url,
-            dataType: 'json'
-        languages.done (data)->
-            data = data['Accept-Language'].split(';')[0].split(',')[1];
-            cb(data)
+            if !@$element.data 'text'
+                @$element.data 'text', @$element.html()
+            @$element.html i18n._ @$element.data 'text'
 
-    getTranslations = (language, cb) ->
-        if _cache[language]
-            cb _cache[language]
-        else
-            translations = $.ajax
-                url: _localeFolder + '/' + language + '.json',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8"
-            translations.done (data)->
-                _cache[language] = data
-                cb(data)
+        getLanguage: (url, cb)->
+            languages = $.ajax
+                url: url,
+                dataType: 'json'
+            languages.done (data)->
+                cb(data[0])
+
+        getTranslations: (language, cb)->
+            if _cache[language]
+                cb _cache[language]
+            else
+                translations = $.ajax
+                    url: _localeFolder + '/' + language + '.json',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8"
+                translations.done (data)->
+                    _cache[language] = data
+                    cb(data)
 
     $.fn.translate = (options)->
-        options = options || {}
-        _options =
-            detectUrl: ''
-            localeFolder: 'locale'
-            language: 'en'
-        _options = $.extend _options, options
-        $this = this
-        if !options.language
-            getLanguage _options.detectUrl, (language)->
-                options.language = language
-                _options = $.extend _options, options
-                getTranslations language, (translation)->
-                    $this = translate translation, $this
-                    $this.trigger('translate:translated', [_options.language])
-                    $this
-        else
-            getTranslations _options.language, (translation)->
-                $this = translate translation, $this
-                $this.trigger('translate:translated', [_options.language])
-                $this
-        $this
+        return @each ()->
+            $this = $(this)
+            data = $this.data('translate')
+            options = typeof options == 'object' && options
+
+            if not data
+                $this.data 'translate', (data = new Translate this, options)
+            else if options
+                 data.options = $.extend data.options, options
+                 $this.data 'translate', data
+
+            obj = $this.data('translate')
+
+            if obj and not options.language
+                obj.getLanguage obj.options.detectUrl, (language)->
+                    obj.getTranslations language, (data)->
+                        obj.doTranslation data;
+            else if obj and not _cache[obj.options.language]
+                obj.getTranslations obj.options.language, (data)->
+                    obj.doTranslation data;
+            else if obj
+                obj?.doTranslation _cache[obj.options.language];
+
+    $.fn.translate.Constructor = Translate;
 ) jQuery
