@@ -11,7 +11,7 @@
       this.type = type;
       this.$element = $(element);
       this.options = {
-        detectUrl: '',
+        detectUrl: 'http://localhost:3000/languages',
         localeFolder: 'locale',
         language: 'en'
       };
@@ -77,13 +77,24 @@
       options = typeof options === 'object' && options;
       if (!data) {
         $this.data('translate', (data = new Translate(this, options)));
+      } else if (options) {
+        data.options = $.extend(data.options, options);
+        $this.data('translate', data);
       }
       obj = $this.data('translate');
-      return obj != null ? obj.getLanguage(obj.options.detectUrl, function(language) {
-        return obj != null ? obj.getTranslations(language, function(data) {
-          return obj != null ? obj.doTranslation(data) : void 0;
-        }) : void 0;
-      }) : void 0;
+      if (obj && !options.language) {
+        return obj.getLanguage(obj.options.detectUrl, function(language) {
+          return obj.getTranslations(language, function(data) {
+            return obj.doTranslation(data);
+          });
+        });
+      } else if (obj && !_cache[obj.options.language]) {
+        return obj.getTranslations(obj.options.language, function(data) {
+          return obj.doTranslation(data);
+        });
+      } else if (obj) {
+        return obj != null ? obj.doTranslation(_cache[obj.options.language]) : void 0;
+      }
     });
   };
   return $.fn.translate.Constructor = Translate;

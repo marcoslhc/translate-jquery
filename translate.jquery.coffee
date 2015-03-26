@@ -9,7 +9,7 @@
             @type = type;
             @$element = $(element)
             @options =
-                detectUrl: ''
+                detectUrl: 'http://localhost:3000/languages'
                 localeFolder: 'locale'
                 language: 'en'
 
@@ -56,12 +56,23 @@
             data = $this.data('translate')
             options = typeof options == 'object' && options
 
-            if not data then $this.data 'translate', (data = new Translate this, options)
+            if not data
+                $this.data 'translate', (data = new Translate this, options)
+            else if options
+                 data.options = $.extend data.options, options
+                 $this.data 'translate', data
 
             obj = $this.data('translate')
-            obj?.getLanguage obj.options.detectUrl, (language)->
-                obj?.getTranslations language, (data)->
-                    obj?.doTranslation data;
+
+            if obj and not options.language
+                obj.getLanguage obj.options.detectUrl, (language)->
+                    obj.getTranslations language, (data)->
+                        obj.doTranslation data;
+            else if obj and not _cache[obj.options.language]
+                obj.getTranslations obj.options.language, (data)->
+                    obj.doTranslation data;
+            else if obj
+                obj?.doTranslation _cache[obj.options.language];
 
     $.fn.translate.Constructor = Translate;
 ) jQuery
