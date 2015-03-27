@@ -86,17 +86,17 @@
         return obj.getLanguage(obj.options.detectUrl, function(language) {
           return obj.getTranslations(language, function(data) {
             obj.doTranslation(data);
-            return obj.trigger('translate:translated', [language]);
+            return $this.trigger('translate:translated', [language]);
           });
         });
       } else if (obj && !_cache[obj.options.language]) {
         return obj.getTranslations(obj.options.language, function(data) {
           obj.doTranslation(data);
-          return obj.trigger('translate:translated', [obj.options.language]);
+          return $this.trigger('translate:translated', [obj.options.language]);
         });
       } else if (obj) {
         obj.doTranslation(_cache[obj.options.language]);
-        return obj.trigger('translate:translated', [obj.options.language]);
+        return $this.trigger('translate:translated', [obj.options.language]);
       }
     });
   };
