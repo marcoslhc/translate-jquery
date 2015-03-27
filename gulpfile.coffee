@@ -5,13 +5,15 @@ del     = require 'del'
 gutil   = require 'gulp-util'
 concat  = require 'gulp-concat'
 order   = require 'gulp-order'
+rename  = require 'gulp-rename'
 
 gulp.task 'build', (cb)->
     gulp.src('translate.jquery.coffee')
         .on('error', gutil.log)
         .pipe(coffee({bare: true}))
-        .pipe(gulp.dest('./'))
+        .pipe(gulp.dest './dist/')
         .pipe(uglify())
+        .pipe(rename 'translate.jquery.min.js')
         .pipe(gulp.dest './dist/')
 
 gulp.task 'test', ['build'], (cb)->
