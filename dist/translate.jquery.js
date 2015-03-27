@@ -1,1 +1,101 @@
-!function(t){var e,n,a;return n={},a="locale/",e=function(){function e(t,e){this.init("translate",t,e)}return e.prototype.init=function(e,n,a){return this.type=e,this.$element=t(n),this.options={detectUrl:"http://localhost:3000/languages",localeFolder:"locale",language:"en"},this.option=t.extend(this.options,a)},e.prototype.doTranslation=function(t){return i18n(t),this.$element.attr("placeholder")&&(this.$element.data("placeholder")||this.$element.data("placeholder",this.$element.attr("placeholder")),this.$element.attr("placeholder",i18n._(this.$element.data("placeholder")))),this.$element.attr("value")&&(this.$element.data("value")||this.$element.data("value",this.$element.attr("value")),this.$element.attr("value",i18n._(this.$element.data("value")))),this.$element.data("text")||this.$element.data("text",this.$element.html()),this.$element.html(i18n._(this.$element.data("text")))},e.prototype.getLanguage=function(e,n){var a;return a=t.ajax({url:e,dataType:"json"}),a.done(function(t){return n(t[0])})},e.prototype.getTranslations=function(e,o){var l;return n[e]?o(n[e]):(l=t.ajax({url:a+"/"+e+".json",dataType:"json",contentType:"application/json; charset=utf-8"}),l.done(function(t){return n[e]=t,o(t)}))},e}(),t.fn.translate=function(a){return this.each(function(){var o,l,r;return o=t(this),l=o.data("translate"),a="object"==typeof a&&a,l?a&&(l.options=t.extend(l.options,a),o.data("translate",l)):o.data("translate",l=new e(this,a)),r=o.data("translate"),r&&!a.language?r.getLanguage(r.options.detectUrl,function(t){return r.getTranslations(t,function(t){return r.doTranslation(t)})}):r&&!n[r.options.language]?r.getTranslations(r.options.language,function(t){return r.doTranslation(t)}):r&&null!=r?r.doTranslation(n[r.options.language]):void 0})},t.fn.translate.Constructor=e}(jQuery);
+(function($) {
+  var Translate, _cache, _localeFolder;
+  _cache = {};
+  _localeFolder = 'locale/';
+  Translate = (function() {
+    function Translate(element, options) {
+      this.init('translate', element, options);
+    }
+
+    Translate.prototype.init = function(type, element, options) {
+      this.type = type;
+      this.$element = $(element);
+      this.options = {
+        detectUrl: 'http://localhost:3000/languages',
+        localeFolder: 'locale',
+        language: 'en'
+      };
+      return this.option = $.extend(this.options, options);
+    };
+
+    Translate.prototype.doTranslation = function(data) {
+      i18n(data);
+      if (this.$element.attr('placeholder')) {
+        if (!this.$element.data('placeholder')) {
+          this.$element.data('placeholder', this.$element.attr('placeholder'));
+        }
+        this.$element.attr('placeholder', i18n._(this.$element.data('placeholder')));
+      }
+      if (this.$element.attr('value')) {
+        if (!this.$element.data('value')) {
+          this.$element.data('value', this.$element.attr('value'));
+        }
+        this.$element.attr('value', i18n._(this.$element.data('value')));
+      }
+      if (!this.$element.data('text')) {
+        this.$element.data('text', this.$element.html());
+      }
+      return this.$element.html(i18n._(this.$element.data('text')));
+    };
+
+    Translate.prototype.getLanguage = function(url, cb) {
+      var languages;
+      languages = $.ajax({
+        url: url,
+        dataType: 'json'
+      });
+      return languages.done(function(data) {
+        return cb(data[0]);
+      });
+    };
+
+    Translate.prototype.getTranslations = function(language, cb) {
+      var translations;
+      if (_cache[language]) {
+        return cb(_cache[language]);
+      } else {
+        translations = $.ajax({
+          url: _localeFolder + '/' + language + '.json',
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8"
+        });
+        return translations.done(function(data) {
+          _cache[language] = data;
+          return cb(data);
+        });
+      }
+    };
+
+    return Translate;
+
+  })();
+  $.fn.translate = function(options) {
+    return this.each(function() {
+      var $this, data, obj;
+      $this = $(this);
+      data = $this.data('translate');
+      options = typeof options === 'object' && options;
+      if (!data) {
+        $this.data('translate', (data = new Translate(this, options)));
+      } else if (options) {
+        data.options = $.extend(data.options, options);
+        $this.data('translate', data);
+      }
+      obj = $this.data('translate');
+      if (obj && !options.language) {
+        return obj.getLanguage(obj.options.detectUrl, function(language) {
+          return obj.getTranslations(language, function(data) {
+            return obj.doTranslation(data);
+          });
+        });
+      } else if (obj && !_cache[obj.options.language]) {
+        return obj.getTranslations(obj.options.language, function(data) {
+          return obj.doTranslation(data);
+        });
+      } else if (obj) {
+        return obj != null ? obj.doTranslation(_cache[obj.options.language]) : void 0;
+      }
+    });
+  };
+  return $.fn.translate.Constructor = Translate;
+})(jQuery);
