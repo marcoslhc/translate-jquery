@@ -68,14 +68,14 @@
                 obj.getLanguage obj.options.detectUrl, (language)->
                     obj.getTranslations language, (data)->
                         obj.doTranslation data;
-                        obj.trigger 'translate:translated', [language]
+                        $this.trigger 'translate:translated', [language]
             else if obj and not _cache[obj.options.language]
                 obj.getTranslations obj.options.language, (data)->
                     obj.doTranslation data;
-                    obj.trigger 'translate:translated', [obj.options.language]
+                    $this.trigger 'translate:translated', [obj.options.language]
             else if obj
                 obj.doTranslation _cache[obj.options.language]
-                obj.trigger 'translate:translated', [obj.options.language]
+                $this.trigger 'translate:translated', [obj.options.language]
 
     $.fn.translate.Constructor = Translate;
 ) jQuery
