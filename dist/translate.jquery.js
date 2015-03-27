@@ -85,15 +85,18 @@
       if (obj && !options.language) {
         return obj.getLanguage(obj.options.detectUrl, function(language) {
           return obj.getTranslations(language, function(data) {
-            return obj.doTranslation(data);
+            obj.doTranslation(data);
+            return obj.trigger('translate:translated', [language]);
           });
         });
       } else if (obj && !_cache[obj.options.language]) {
         return obj.getTranslations(obj.options.language, function(data) {
-          return obj.doTranslation(data);
+          obj.doTranslation(data);
+          return obj.trigger('translate:translated', [obj.options.language]);
         });
       } else if (obj) {
-        return obj != null ? obj.doTranslation(_cache[obj.options.language]) : void 0;
+        obj.doTranslation(_cache[obj.options.language]);
+        return obj.trigger('translate:translated', [obj.options.language]);
       }
     });
   };
