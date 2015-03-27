@@ -20,7 +20,7 @@ gulp.task 'test', ['build'], (cb)->
     src = [
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/i18n/i18n.js',
-        'translate.jquery.js',
+        'dist/translate.jquery.js',
         'test/test.js'
         ];
     gulp.src(src)

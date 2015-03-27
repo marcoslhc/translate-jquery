@@ -55,7 +55,7 @@
         return cb(_cache[language]);
       } else {
         translations = $.ajax({
-          url: _localeFolder + '/' + language + '.json',
+          url: this.options.localeFolder + '/' + language + '.json',
           dataType: 'json',
           contentType: "application/json; charset=utf-8"
         });
@@ -80,6 +80,9 @@
       } else if (options) {
         data.options = $.extend(data.options, options);
         $this.data('translate', data);
+      }
+      if (!options) {
+        return;
       }
       obj = $this.data('translate');
       if (obj && !options.language) {
