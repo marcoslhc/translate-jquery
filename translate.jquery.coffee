@@ -43,7 +43,7 @@
                 cb _cache[language]
             else
                 translations = $.ajax
-                    url: _localeFolder + '/' + language + '.json',
+                    url: @options.localeFolder + '/' + language + '.json',
                     dataType: 'json',
                     contentType: "application/json; charset=utf-8"
                 translations.done (data)->
@@ -61,6 +61,8 @@
             else if options
                  data.options = $.extend data.options, options
                  $this.data 'translate', data
+
+            return if not options
 
             obj = $this.data('translate')
 
