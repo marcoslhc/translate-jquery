@@ -1,3 +1,27 @@
+/**
+ * The MIT License (MIT)
+
+ * Copyright (c) <2015> <Marcos Luis Hernández>
+
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 (function($) {
   var Translate, _cache, _localeFolder;
   _cache = {};
@@ -18,7 +42,7 @@
       return this.option = $.extend(this.options, options);
     };
 
-    Translate.prototype.doTranslation = function(data) {
+    Translate.prototype.doTranslation = function(data, cb) {
       i18n(data);
       if (this.$element.attr('placeholder')) {
         if (!this.$element.data('placeholder')) {
@@ -35,7 +59,8 @@
       if (!this.$element.data('text')) {
         this.$element.data('text', this.$element.html());
       }
-      return this.$element.html(i18n._(this.$element.data('text')));
+      this.$element.html(i18n._(this.$element.data('text')));
+      return cb && cb(data);
     };
 
     Translate.prototype.getLanguage = function(url, cb) {
@@ -88,18 +113,21 @@
       if (obj && !options.language) {
         return obj.getLanguage(obj.options.detectUrl, function(language) {
           return obj.getTranslations(language, function(data) {
-            obj.doTranslation(data);
-            return $this.trigger('translate:translated', [language]);
+            return obj.doTranslation(data, function() {
+              return $this.trigger('translate:translated', [language]);
+            });
           });
         });
       } else if (obj && !_cache[obj.options.language]) {
         return obj.getTranslations(obj.options.language, function(data) {
-          obj.doTranslation(data);
-          return $this.trigger('translate:translated', [obj.options.language]);
+          return obj.doTranslation(data, function() {
+            return $this.trigger('translate:translated', [obj.options.language]);
+          });
         });
       } else if (obj) {
-        obj.doTranslation(_cache[obj.options.language]);
-        return $this.trigger('translate:translated', [obj.options.language]);
+        return obj.doTranslation(_cache[obj.options.language], function() {
+          return $this.trigger('translate:translated', [obj.options.language]);
+        });
       }
     });
   };

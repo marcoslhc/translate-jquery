@@ -6,11 +6,16 @@ gutil   = require 'gulp-util'
 concat  = require 'gulp-concat'
 order   = require 'gulp-order'
 rename  = require 'gulp-rename'
+merge   = require 'merge-stream'
 
 gulp.task 'build', (cb)->
-    gulp.src('translate.jquery.coffee')
+    license = gulp.src('license.txt')
+    source = gulp.src('translate.jquery.coffee')
         .on('error', gutil.log)
         .pipe(coffee({bare: true}))
+
+    merge(license, source)
+        .pipe(concat('translate.jquery.js'))
         .pipe(gulp.dest './dist/')
         .pipe(uglify())
         .pipe(rename 'translate.jquery.min.js')
